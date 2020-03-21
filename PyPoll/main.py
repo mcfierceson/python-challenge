@@ -3,40 +3,44 @@
 import os
 import csv
 
-csvpath = os.path.join('Resources', 'budget_data.csv')
+csvpath = os.path.join('Resources', 'election_data.csv')
 
 with open(csvpath) as csvfile:
 
     csvreader = csv.reader(csvfile, delimiter=',')
 
     header = next(csvreader)
-    months = []
-    lastMonth = "None"
-    lastTotal = 0
-    grandTotal = 0
-    change = []
+
+    names = []
+    votes = []
 
     # Read each row of data after the header
     for row in csvreader:
 
-        thisMonth = row[0]
-        thisTotal = int(row[1])
+        lastName = row[2]
+        rowVotes = int(row[0])
 
-        months.append(thisMonth)
-        change.append(thisTotal - lastTotal)
-
-        grandTotal = grandTotal + thisTotal
-        lastTotal = int(row[1])
+        if lastName not in names:
+            names.append(lastName)
+            votes.append(rowVotes)
+        else:
+            nameIndex = names.index(lastName)
+            currTotal = votes[nameIndex] + rowVotes
+            votes[nameIndex] = currTotal
         
+    totalVotes = sum(votes)
 
-    avgChange = sum(change) / len(change)
-    maxMonth = change.index(max(change))
-    minMonth = change.index(min(change))
+    print("\nElection Results")
+    print("---------------------------------")
+    print(f"Total Votes: {totalVotes}")
+    print("---------------------------------")
 
-    print("\nFinancial Analysis")
-    print("---------------------------")
-    print(f"Total Months: {len(months)}")
-    print(f"Total: ${grandTotal}")
-    print(f"Average Change: ${round(avgChange,2)}")
-    print(f"Greatest Increase in Profits: {months[maxMonth]} (${max(change)})")
-    print(f"Greatest Decrease in Profits: {months[minMonth]} (${min(change)})\n")
+    for x in range(len(names)):
+        percentage = round((votes[x] / totalVotes) * 100, 3)
+        print(f"{names[x]}: {percentage}%  ({votes[x]})")
+    print("---------------------------------")
+    
+    winner = names[votes.index(max(votes))]
+
+    print(f"Winner: {winner}")
+    print("---------------------------------\n")
