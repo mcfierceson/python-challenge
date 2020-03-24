@@ -2,6 +2,7 @@
 
 import os
 import csv
+import sys
 
 csvpath = os.path.join('Resources', 'budget_data.csv')
 
@@ -18,7 +19,7 @@ with open(csvpath) as csvfile:
 
     # Read each row of data after the header
     for row in csvreader:
-
+        
         thisMonth = row[0]
         thisTotal = int(row[1])
 
@@ -33,6 +34,10 @@ with open(csvpath) as csvfile:
     maxMonth = change.index(max(change))
     minMonth = change.index(min(change))
 
+    saveout = sys.stdout
+    text_file = open("bank_output.txt", "w")
+    sys.stdout = text_file
+
     print("\nFinancial Analysis")
     print("---------------------------")
     print(f"Total Months: {len(months)}")
@@ -40,3 +45,14 @@ with open(csvpath) as csvfile:
     print(f"Average Change: ${round(avgChange,2)}")
     print(f"Greatest Increase in Profits: {months[maxMonth]} (${max(change)})")
     print(f"Greatest Decrease in Profits: {months[minMonth]} (${min(change)})\n")
+
+    sys.stdout = saveout
+    text_file.close()
+
+file = 'bank_output.txt'
+
+with open(file, 'r') as text:
+
+    lines = text.read()
+
+    print(lines)

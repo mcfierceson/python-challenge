@@ -2,6 +2,7 @@
 
 import os
 import csv
+import sys
 
 csvpath = os.path.join('Resources', 'election_data.csv')
 
@@ -30,6 +31,10 @@ with open(csvpath) as csvfile:
         
     totalVotes = sum(votes)
 
+    saveout = sys.stdout
+    text_file = open("election_output.txt", "w")
+    sys.stdout = text_file
+
     print("\nElection Results")
     print("---------------------------------")
     print(f"Total Votes: {totalVotes}")
@@ -44,3 +49,13 @@ with open(csvpath) as csvfile:
 
     print(f"Winner: {winner}")
     print("---------------------------------\n")
+    sys.stdout = saveout
+    text_file.close()
+
+file = 'election_output.txt'
+
+with open(file, 'r') as text:
+
+    lines = text.read()
+
+    print(lines)
